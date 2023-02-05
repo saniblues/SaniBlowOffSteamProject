@@ -1,0 +1,7 @@
+Very simply, Objects are being placed inside of Groups with all their assets in a sub-group.
+
+Object Name
+--> Object File
+--> Asset Folder
+------> Graphics
+------> Sounds

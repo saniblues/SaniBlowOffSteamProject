@@ -1,0 +1,29 @@
+  Similarly to Objects, we're storing these in their own folders with their own assets
+If a room uses another room's tileset, make a note of it in the Assets folder.
+
+  Props follow the same structure as Objects, with the exception that their assets will
+typically be unsorted. All props use par_prop as a base, modifying their code as needed
+in the Create event. You're a NTT modder, Sani(self)(Supreme). You know what's up here. 
+The same applies to NPCs. 
+
+ExampleRoom
+--> Room Assets
+------> Tilesets
+------> Graphics
+------> Sounds
+------> Shared (Note)
+
+--> Props
+------> Assets
+------------> Graphics
+------------> Sounds
+------------> etc (should not need ect)
+------> Prop1
+------> Prop2
+------> (...)
+
+--> NPCs
+------> Assets
+------------> Graphics
+------------> Sounds
+------------> etc (should not need ect)
