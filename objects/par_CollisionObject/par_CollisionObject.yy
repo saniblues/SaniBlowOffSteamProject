@@ -26,7 +26,7 @@
   "physicsShapePoints": [],
   "physicsStartAwake": true,
   "properties": [],
-  "solid": false,
+  "solid": true,
   "spriteId": {
     "name": "Sprite7",
     "path": "sprites/Sprite7/Sprite7.yy",

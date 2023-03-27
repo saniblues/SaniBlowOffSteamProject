@@ -1,16 +1,19 @@
 {
 	debug_drag_step();
-	var accel_speed = 1; // temporary
-	var jump_strength = -4; // temporary
-	var maxhspd = 2.25 + hspd_extra; // temporary
-	var maxvspd = 4 + hspd_extra; // temporary
+	var accel_speed = 0.5;
+	var jump_strength = -4 - vspd_extra;
+	var maxhspd = max_vspd + hspd_extra;
+	var maxvspd = max_hspd + hspd_extra;
 	var hp = button_check(0, KEY_RIGHT) - button_check(0, KEY_LEFT);
 	var vp = button_check(0, KEY_DOWN) - button_check(0,KEY_UP);
+	if moveState == movestate.tumble || tumble_frame > current_frame - 30{
+		accel_speed = 0.125;	
+	}
 	if gameState == gamestate.idle{
-		if abs(hp) && !batch_compare(moveState, movestate.jump_charge, movestate.slide, movestate.hitstun, movestate.bonk){
+		if abs(hp) && !batch_compare(moveState,movestate.dropkick,movestate.jump_charge, movestate.slide, movestate.hitstun, movestate.bonk){
 			hspd += accel_speed * hp;
 			image_xscale = sign(hp);
-			if place_meeting(x,y+1,par_CollisionObject) && moveState = movestate.idle && !batch_compare(moveState, movestate.doublejump, movestate.jump_charge, movestate.hitstun,movestate.bonk){//moveState != movestate.doublejump{
+			if place_meeting(x,y+1,par_CollisionObject) && moveState = movestate.idle && !batch_compare(moveState, movestate.tumble,movestate.doublejump, movestate.jump_charge, movestate.hitstun,movestate.bonk){//moveState != movestate.doublejump{
 				moveState = movestate.walk;	
 			}
 		}
@@ -43,6 +46,9 @@
 			hspd = (maxhspd + hspd_extra) * sign(image_xscale);
 			hspd_decay_frame = current_frame + 20;
 			jump_strength /= 2;
+			
+			//vspd_extra = 0.5;
+			//jump_strength -= vspd_extra;
 			vspd = jump_strength;
 			repeat(6){
 				with(instance_create(x + (hspd * 2),y,par_Effect)){
@@ -53,6 +59,9 @@
 			audio_play_sound(snd_jump_angy,1,0);
 			y --;
 			moveState = movestate.angyjump;
+		}
+		if button_pressed(0,KEY_DOWN) && batch_compare(moveState,movestate.jump,movestate.doublejump,movestate.angyjump){
+			moveState = movestate.dropkick;	
 		}
 		if button_pressed(0,KEY_UP) && (batch_compare(moveState, movestate.idle, movestate.walk, movestate.jump, movestate.jump_charge, movestate.doublejump) || (moveState == movestate.doublejump_landing && coyote_time >= current_frame + 20)){
 			if moveState != movestate.doublejump /*|| !jump_avail*/{

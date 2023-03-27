@@ -9,6 +9,9 @@
 			
 			_item.timer --;
 			if _item.timer <= 0{
+				with(_item.source){
+					// beep
+				}
 				try{
 					with(_item.source){
 						_item.func(_item.passthrough);

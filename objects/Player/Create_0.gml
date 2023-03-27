@@ -1,7 +1,14 @@
 {
 	event_inherited();
 	cling_direction = 1;
+	wallcling_frame = current_frame;
+	wallcling_button = KEY_START;
+	max_vspd = 3;
+	max_hspd = 4;
 	accelerator_enabled = false; // Temporary
+	tumble_frame = 0;
+	team = 1;
+	friction = 0.2;
 	// Player-specific functions
 	bounce_particles = function(){
 		var i = -1;

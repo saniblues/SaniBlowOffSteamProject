@@ -40,13 +40,12 @@ function debug_drag_step(){
 	
 	var sw = sprite_width/2, sh = sprite_height/2;
 	if button_check(0,KEY_L1) && button_pressed(0,KEY_FIRE){
-		trace("ATTEMPTING TO DRAG",object_get_name(object_index),"...");
 		var _bbox = new bbox(id);
 		
 		/*
 			Creates a red rectangle around the entire sprite
 			I was debugging this (tl;dr I was using crunched coordinates) but maybe this will come up later
-			so; HITBOX VIEWER
+			so *ahem*; HITBOX VIEWER
 		*/
 		
 		with(script_bind()){
@@ -71,8 +70,7 @@ function debug_drag_step(){
 			debug_dragging = true;
 			drag_xoff = mouse_x - x;
 			drag_yoff = mouse_y - y;
-			trace("SUCCESS!");
-		}else trace("TRY AGAIN!");
+		}
 		
 		delete _bbox;
 	}
@@ -80,6 +78,8 @@ function debug_drag_step(){
 		var _xp = x, _yp = y;
 		x = lerp(x,mouse_x + drag_xoff,0.1);
 		y = lerp(y,mouse_y + drag_yoff,0.1);
+		x=round(x);
+		y=round(y);
 		if var_in_self("hspd"){
 			hspd -= diff(_xp,x) / 2;
 			vspd -= diff(_yp,y) / 2;
@@ -114,6 +114,20 @@ function bbox(_id) constructor{
 	sprite_top = (_y - _hig);
 	sprite_right = (_x + _wid);
 	sprite_bottom = (_y + _hig);
+}
+function collision_at_visual(_x,_y){
+	return collision_at(_x,_y);
+	with(instance_create(_x,_y,par_Effect)){
+		sprite_index = sprEmmi_SanicJump;	
+	}
+	return collision_at(_x,_y);
+}
+function collision_at(_x,_y){
+	_x = _x div TILE_WIDTH;
+	_y = _y div TILE_HEIGHT;
+	var source_layer = layer_get_id("Collision");
+	var collision_layer = layer_tilemap_get_id(source_layer);
+	return tilemap_get(collision_layer,_x,_y);
 }
 function place_meeting_grid(_x, _y, _obj){
 	if !instance_exists(id) || !instance_exists(_obj) return false;

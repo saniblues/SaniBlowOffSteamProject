@@ -1,25 +1,27 @@
 function pixel_collision(){
 	// Vertical
-	for(var i = 0;i<abs(vspd);++i){
-		if place_meeting(x, y + sign(vspd), par_CollisionObject){
-			y -= vspd;
-			vspd = 0;
-			break;
+	if place_meeting(x, y+vspd,par_CollisionObject) || vspd >= 16{
+		for(var i = 0;i<abs(vspd);++i){
+			if place_meeting(x, y + sign(vspd), par_CollisionObject){
+				vspd = 0;
+				break;
+			}else y += sign(vspd);
 		}
-	}
-	for(var i = 0;i<abs(hspd);++i){
-		if place_meeting(x + sign(hspd), y, par_CollisionObject) && !place_meeting(x + sign(hspd), y - 1, par_CollisionObject){
-			--y;	
+	}else y += vspd;
+	if place_meeting(x+hspd,y,par_CollisionObject) || hspd >= 16{
+		for(var i = 0;i<abs(hspd);++i){
+			if place_meeting(x + sign(hspd), y, par_CollisionObject) && !place_meeting(x + sign(hspd), y - 1, par_CollisionObject){
+				--y;	
+			}
+			if !place_meeting(x + sign(hspd), y, par_CollisionObject) && !place_meeting(x + sign(hspd), y + 1, par_CollisionObject) && place_meeting(x + sign(hspd), y + 2, par_CollisionObject){
+				++y;	
+			}
+			if place_meeting(x + sign(hspd), y, par_CollisionObject){
+				hspd = 0;	
+				break;
+			}else x += sign(hspd);
 		}
-		if !place_meeting(x + sign(hspd), y, par_CollisionObject) && !place_meeting(x + sign(hspd), y + 1, par_CollisionObject) && place_meeting(x + sign(hspd), y + 2, par_CollisionObject){
-			++y;	
-		}
-		if place_meeting(x + sign(hspd), y, par_CollisionObject){
-			x -= hspd;
-			hspd = 0;	
-			break;
-		}
-	}
+	}else x += hspd;
 	/*
 	// Actual collision checks + movement
 	var i;

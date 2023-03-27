@@ -2,12 +2,10 @@ var xst = 8, yst = surface_get_height(application_surface) - round(font_get_size
 draw_set_font(fntM);
 draw_set_halign(fa_right);
 draw_set_halign(fa_center);
-
-exit;
-
 // The actual tracelog stuff
 //var _fnt = draw_get_font();
 //draw_set_font(spr_font);
+display_set_gui_size(window_get_width(), window_get_height());
 var _scale = 1;
 if(typing){
 	input_string = keyboard_string;

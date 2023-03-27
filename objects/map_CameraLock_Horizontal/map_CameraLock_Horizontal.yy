@@ -3,7 +3,7 @@
   "resourceVersion": "1.0",
   "name": "map_CameraLock_Horizontal",
   "eventList": [
-    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,},
+    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,},
   ],
   "managed": true,
   "overriddenProperties": [],
@@ -11,7 +11,10 @@
     "name": "Mapping",
     "path": "folders/Mapping.yy",
   },
-  "parentObjectId": null,
+  "parentObjectId": {
+    "name": "par_Cameralock",
+    "path": "objects/par_Cameralock/par_Cameralock.yy",
+  },
   "persistent": false,
   "physicsAngularDamping": 0.1,
   "physicsDensity": 0.5,

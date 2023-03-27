@@ -22,7 +22,7 @@ function projectile_hit_ext(_id,_damage,_use_iframes,_kb_str,_kb_dir){
 	
 	with(_id){
 		// Exit if the projectile adheres to iframes and cannot hit
-		if nexthurt > current_frame && (_iframes){
+		if nexthurt > current_frame && (_use_iframes){
 			return false;
 		}
 		my_health -= _damage;

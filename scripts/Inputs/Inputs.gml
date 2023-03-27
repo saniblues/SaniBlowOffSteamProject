@@ -68,6 +68,7 @@ function button_init(){
 	#macro KEY_R1 9                     // Space
 	#macro KEY_SELECT 10                // E? Enter? Undecided
 	#macro KEY_START 11                 // Esc. Uberpause.
+	#macro KEY_ESC 11                   // Look man, I won't remember this shit
 	
 	#macro KEY_DPAD_UP 12               // Used
 	#macro KEY_DPAD_DOWN 13             // For

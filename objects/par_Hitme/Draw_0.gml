@@ -12,5 +12,9 @@
 		}
 	}
 	
-	draw_sprite_ext(sprite_index,image_index,x,y,image_xscale * image_scale, image_yscale * image_scale, image_angle, image_blend, image_alpha);
+	if is_undefined(image_xscale_draw){
+		draw_sprite_ext(sprite_index,image_index,ceil(x),ceil(y),image_xscale * image_scale, image_yscale * image_scale, round(image_angle_draw), image_blend, image_alpha);
+	}else{
+		draw_sprite_ext(sprite_index,image_index,ceil(x),ceil(y),image_xscale_draw * image_scale, image_yscale_draw * image_scale, round(image_angle_draw), image_blend, image_alpha);
+	}
 }
