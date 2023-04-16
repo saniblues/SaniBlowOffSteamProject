@@ -603,3 +603,142 @@ function diff(_val1, _val2){
 function absdiff(_val1, _val2){
 	return abs(_val1 - _val2);	
 }
+
+function variable_struct_null_to_undefined(_struct){
+	if !is_lq(_struct) exit;
+	var _keys = variable_struct_get_names(_struct);
+	for(var i = 0;i<array_length(_keys);i++){
+		if is_struct(lq_get(_struct,_keys[i])){
+			lq_set(_struct,_keys[i],variable_struct_null_to_undefined(lq_get(_struct,_keys[i])));
+		}else{
+			if lq_get(_struct,_keys[i]) == pointer_null{
+				lq_set(_struct,_keys[i],undefined);
+			}
+		}
+	}
+	return _struct;
+}
+
+//https://forum.yoyogames.com/index.php?threads/struct-nesting-issue-not-passing-by-reference.81056/#post-482427
+
+function copy_deep(thing, source) {
+    var copyType = typeof(thing);
+    if (copyType != typeof(source)) throw "Trying to copy incompatible types";
+    var copySize, thingEntry, sourceEntry, sourceType;
+    switch (copyType) {
+        case "array":
+            copySize = array_length(source);
+            array_resize(thing, copySize);
+            for (var i = copySize-1; i >= 0; --i) {
+                thingEntry = thing[i];
+                sourceEntry = source[i];
+                sourceType = typeof(sourceEntry);
+                if (sourceType == typeof(thingEntry) && (is_array(thingEntry) || is_struct(thingEntry))) {
+                    copy_deep(thingEntry, sourceEntry);
+                } else {
+                    array_set(thing, i, clone_deep(sourceEntry));
+                }
+            }
+        break;
+        case "struct":
+            // Transfer their keys to mine
+            var copyKeys = variable_struct_get_names(source);
+            copySize = array_length(copyKeys);
+            for (var i = copySize-1; i >= 0; --i) {
+                var copyKey = copyKeys[i];
+                thingEntry = variable_struct_get(thing, copyKey);
+                sourceEntry = variable_struct_get(source, copyKey);
+                sourceType = typeof(sourceEntry);
+                if (sourceType == typeof(thingEntry) && (is_array(thingEntry) || is_struct(thingEntry))) {
+                    copy_deep(thingEntry, sourceEntry);
+                } else {
+                    variable_struct_set(thing, copyKey, clone_deep(sourceEntry));
+                }
+            }
+            // Set keys that are not theirs to undefined
+            var myKeys = variable_struct_get_names(thing);
+            var mySize = array_length(myKeys);
+            for (var i = mySize-1; i >= 0; --i) {
+                var myKey = myKeys[i];
+                if (!variable_struct_exists(source, myKey)) {
+                    //variable_struct_set(thing, myKey, undefined);
+                }
+            }
+        break;
+        default:
+            return source;
+    }
+    return thing;
+}
+
+function clone_deep(thing) {
+    var cloneType = typeof(thing);
+    var theClone;
+    switch (cloneType) {
+        case "array":
+            var cloneSize = array_length(thing);
+            theClone = array_create(cloneSize);
+            for (var i = cloneSize-1; i >= 0; --i) {
+                theClone[i] = clone_deep(thing[i]);
+            }
+        break;
+        case "struct":
+            var cloneKeys = variable_struct_get_names(thing);
+            theClone = {};
+            for (var i = array_length(cloneKeys)-1; i >= 0; --i) {
+                var cloneKey = cloneKeys[i];
+                variable_struct_set(theClone, cloneKey, clone_deep(variable_struct_get(thing, cloneKey)));
+            }
+        break;
+        default:
+            return thing;
+    }
+    return theClone;
+}
+
+
+function struct_merge(primary, secondary, shared)	{
+	var _ReturnStruct = primary;
+	var _key = variable_struct_get_names(primary);
+	show_message(string(_key) + "\nKEYS:" + string(array_length(_key)));
+	for(var i = 0;i<array_length(_key);i++){
+		if variable_struct_exists(secondary, _key[i]){
+			show_message(lq_get(secondary,_key[i]));
+			if is_lq(secondary,_key[i]){
+				var _structA = lq_get(primary, _key[i])
+				var _structB = lq_get(secondary, _key[i]);
+				var _structC = struct_merge(_structA, _structB, true);
+				show_message(string_from_args("STRUCTA",_structA));
+				show_message(string_from_args("STRUCTB",_structB));
+				show_message(string_from_args("STRUCTC",_structC));
+				
+			}else{
+				variable_struct_set(primary, _key[i], variable_struct_get(secondary,_key[i]));	
+			}
+		}
+	}
+	return _ReturnStruct;
+	/*
+	var _ReturnStruct = primary;
+	
+	if (shared)	{
+		var _PropertyNames = variable_struct_get_names(primary);
+		for (var i = 0; i < array_length(_PropertyNames); i ++)	{
+			if (variable_struct_exists(secondary, _PropertyNames[i]))	{
+				for(var i = 0;i<array_length(variable_struct_get_names(secondary));i++){
+					show_message(variable_struct_get(secondary,_PropertyNames[i]));
+					//variable_struct_set(_ReturnStruct, _PropertyNames[i], variable_struct_get(
+				}
+				//variable_struct_set(_ReturnStruct, _PropertyNames[i], variable_struct_get(secondary, _PropertyNames[i]));
+			}
+			show_message(lq_get(_ReturnStruct,_PropertyNames[i]));
+		}
+	}	else	{
+		var _PropertyNames = variable_struct_get_names(secondary);
+		for (var i = 0; i < array_length(_PropertyNames); i ++)	{
+			variable_struct_set(_ReturnStruct, _PropertyNames[i], variable_struct_get(secondary, _PropertyNames[i]));
+		}
+	}
+	return _ReturnStruct;
+	*/
+}

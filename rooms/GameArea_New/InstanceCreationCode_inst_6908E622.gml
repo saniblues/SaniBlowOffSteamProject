@@ -1,0 +1,3 @@
+{
+	dest_room = StartRoom;
+}

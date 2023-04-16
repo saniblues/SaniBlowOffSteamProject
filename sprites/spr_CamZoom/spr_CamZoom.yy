@@ -28,8 +28,8 @@
   "nineSlice": null,
   "origin": 0,
   "parent": {
-    "name": "SaniBlowOffSteamProject",
-    "path": "SaniBlowOffSteamProject.yyp",
+    "name": "Sprites",
+    "path": "folders/Mapping/Camera Goodstuff/Sprites.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

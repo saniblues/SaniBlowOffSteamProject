@@ -1,4 +1,5 @@
 {
+	#region Scheduler
 	if ds_list_size(schedule_queue) > 0{
 		for(var i = 0;i<ds_list_size(schedule_queue);i++){
 			var _r = true;
@@ -35,6 +36,15 @@
 			}
 		}
 	}
+	#endregion
+	#region Menus
+	if button_pressed(0,KEY_ESC){
+		menu_cleanup();
+		if !menu_exists(){
+			menu_set(obj_MarginMenu);//menu_set(obj_UberMenu);
+		}
+	}
+	#endregion
 }
 
 enum Schedule{

@@ -16,4 +16,7 @@
 			}, i);
 		}
 	}
+	
+	active_menus = [];
+	current_menu = -4;
 }

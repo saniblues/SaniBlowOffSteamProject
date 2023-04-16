@@ -19,13 +19,15 @@
 				}
 			}
 		}
-		
+		var _vx = floor(view_object.x), _vy = floor(view_object.y);
 		if !instance_exists(view_anchor){
-			x = lerp(x, view_object.x, 0.5);
-			y = lerp(y, view_object.y, 0.5);
-			if point_distance(x,y,view_object.x,view_object.y) <= 1{
-				x = view_object.x;
-				y = view_object.y;
+			x = lerp(x, _vx, 0.5);
+			y = lerp(y, _vy, 0.5);
+			if absdiff(x,_vx) <= CAM_LERP_MIN{
+				x = _vx;	
+			}
+			if absdiff(y,view_object.y) <= CAM_LERP_MIN{
+				y = _vy;	
 			}
 		}else{
 			with(view_object){
@@ -43,13 +45,11 @@
 		if !instance_exists(zoom_object){
 			cam_zoom_goal = 1;	
 		}
-		x = floor(x);
-		y = floor(y);
 		cam_zoom = lerp(cam_zoom, cam_zoom_goal, 0.25);
 		if cam_zoom != 1{
 			surface_resize(application_surface, game_width/cam_zoom_goal, game_height/cam_zoom_goal);	
 		}
 	}
 	camera_set_view_size(view_camera[0], game_width / cam_zoom, game_height / cam_zoom);
-	camera_set_view_pos(view_camera[0], floor(x - ((game_width/2) / cam_zoom)), floor(y - ((game_height/2) / cam_zoom))); 
+	camera_set_view_pos(view_camera[0], floor(x) - floor((game_width/2) / cam_zoom), floor(y) - floor((game_height/2) / cam_zoom)); 
 }

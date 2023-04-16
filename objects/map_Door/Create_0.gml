@@ -24,11 +24,17 @@
 				input_level_pause(0);
 				with(creator){
 					if (use_dest_coords){
-						/*
-							with(instance_create(0,0,obj_TransitionHandler)){
-								dest_raw = other.dest_raw;
+						//*/
+						with(instance_create(0,0,sys_TransitionHandler)){
+							transition_dest = {
+								room : other.dest_raw[0],
+								x : other.dest_raw[1],
+								y : other.dest_raw[2],
+								view_direction : Player.image_xscale,
+								door_id : other.image_index
 							}
-						*/
+						}
+						/*/
 						// All of the below is temporary
 						if dest_raw[0] != room{
 							// Temporary
@@ -40,9 +46,18 @@
 								y = other.dest_raw[2];
 							}
 						}
+						//*/
 					}else{
-						if (dest_room != room){
-							
+						if (dest_room != room || dest_raw[0] != room){
+							with(instance_create(0,0,sys_TransitionHandler)){
+								transition_dest = {
+									room : other.dest_raw[0] == room ? other.dest_room : other.dest_raw[0],
+									x : other.dest_raw[1],
+									y : other.dest_raw[2],
+									view_direction : Player.image_xscale,
+									door_id : other.image_index
+								}
+							}
 						}else{
 							// It's sending you to a random door of the same image index
 							// I don't think this'll come up gameplay-wise, just idiot-proofing my work

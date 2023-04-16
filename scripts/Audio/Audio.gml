@@ -78,6 +78,8 @@ function Caption(_SID,_Text,_WaitForCaption,_Lifetime,_ForcedOrder) constructor{
 }
 
 function audio_play_captioned(_SID){
+	audio_play_captioned_pitchvol(_SID, 1, 1);
+	/*
 	if !audio_exists(_SID) exit;
 	if !instance_exists(sys_ClosedCaptioning){
 		instance_create_depth(0,0,0,sys_ClosedCaptioning);	
@@ -93,6 +95,7 @@ function audio_play_captioned(_SID){
 	}else{
 		audio_play_sound(_SID,1,0);	
 	}
+	*/
 }
 
 function audio_play_captioned_pitch(_SID,_pitch){
@@ -105,7 +108,7 @@ function audio_play_captioned_pitchvol(_SID,_pitch,_vol){
 	}
 	var _lq = audio_caption_lookup(_SID);
 	_lq.pitch = _pitch;
-	_lq.gain = _vol;
+	_lq.gain = _vol * SETTING.audio.sfx_volume;
 	if !is_undefined(_lq){
 		if is_struct(_lq){
 			with(sys_ClosedCaptioning){

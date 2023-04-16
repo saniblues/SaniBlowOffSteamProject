@@ -58,7 +58,7 @@
   "origin": 4,
   "parent": {
     "name": "Sprites",
-    "path": "folders/Mapping/Sprites.yy",
+    "path": "folders/Mapping/Camera Goodstuff/Sprites.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

@@ -5,8 +5,12 @@
 event_inherited();
 do_movement = function(_id){
 	with(_id){
-		y = lerp(y, view_object.y,0.25)
-		x = lerp(x, other.x + ((other.bbox_right - other.bbox_left) / 2), 0.25);
+		var _x = other.x + ((other.bbox_right - other.bbox_left) / 2);
+		y = lerp(y, view_object.y,0.25);
+		x = lerp(x, _x, 0.25);
+		if absdiff(x,_x) <= CAM_LERP_MIN{
+			x = _x;
+		}
 		floor(x);	
 	}
 }

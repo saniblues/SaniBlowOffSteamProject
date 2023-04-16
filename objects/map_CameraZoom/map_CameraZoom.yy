@@ -8,8 +8,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "SaniBlowOffSteamProject",
-    "path": "SaniBlowOffSteamProject.yyp",
+    "name": "Camera Goodstuff",
+    "path": "folders/Mapping/Camera Goodstuff.yy",
   },
   "parentObjectId": null,
   "persistent": false,

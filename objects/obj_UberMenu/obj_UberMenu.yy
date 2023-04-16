@@ -4,16 +4,17 @@
   "name": "obj_UberMenu",
   "eventList": [
     {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,},
-    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":12,"isDnD":false,},
-    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":64,"eventType":8,"isDnD":false,},
   ],
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Menu Goodstuff",
-    "path": "folders/Menu Goodstuff.yy",
+    "name": "Individual Menus",
+    "path": "folders/Menu Goodstuff/Individual Menus.yy",
   },
-  "parentObjectId": null,
+  "parentObjectId": {
+    "name": "par_MenuObject",
+    "path": "objects/par_MenuObject/par_MenuObject.yy",
+  },
   "persistent": false,
   "physicsAngularDamping": 0.1,
   "physicsDensity": 0.5,

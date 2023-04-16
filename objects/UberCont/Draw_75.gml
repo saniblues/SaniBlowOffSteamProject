@@ -1,3 +1,5 @@
+exit;
+
 var xst = 8, yst = surface_get_height(application_surface) - round(font_get_size(trace_font) * 1.5) - 8;
 draw_set_font(fntM);
 draw_set_halign(fa_right);

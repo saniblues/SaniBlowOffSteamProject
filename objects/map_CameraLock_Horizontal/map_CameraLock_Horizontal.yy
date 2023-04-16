@@ -8,8 +8,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Mapping",
-    "path": "folders/Mapping.yy",
+    "name": "Camera Goodstuff",
+    "path": "folders/Mapping/Camera Goodstuff.yy",
   },
   "parentObjectId": {
     "name": "par_Cameralock",

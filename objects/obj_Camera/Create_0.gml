@@ -9,4 +9,9 @@
 	depth = -9999;
 	sprite_index = mskNone;
 	shader_surface = -1;
+	mask_surface = -1;
+	final_surface = -1;
+	
+	pause_surf = -1;
+	pause_surf_2 = -1;
 }
