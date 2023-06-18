@@ -15,7 +15,7 @@
 	max_vspd = 3;
 	tumble_frame = 0;
 	bounce_frame = 0;
-	
+	damage_buffer = -4;
 	slide_strength = 0;
 	hitstun_timer = 0;
 	

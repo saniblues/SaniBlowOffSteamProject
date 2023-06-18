@@ -14,7 +14,10 @@
     "name": "Damage API",
     "path": "folders/SYSTEM/Scripts and Handlers/Damage API.yy",
   },
-  "parentObjectId": null,
+  "parentObjectId": {
+    "name": "GameObject",
+    "path": "objects/GameObject/GameObject.yy",
+  },
   "persistent": false,
   "physicsAngularDamping": 0.1,
   "physicsDensity": 0.5,

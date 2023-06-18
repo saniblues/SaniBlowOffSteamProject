@@ -429,7 +429,13 @@ function instances_meeting_rect(x1,y1,x2,y2,_obj){
 	return ar;
 }
 function is_really_real(_real){
-	return (real(_real) != 0) || (real(_real) == 0 && _real != "0");
+	if is_real(_real) return true;
+	try{
+		var _test = real(_real);
+	}catch(_error){
+		return false;	
+	}//return (real(_real) != 0) || (real(_real) == 0 && _real != "0");
+	return true;
 }
 function room_is_blacklisted(_room){
 	var _ar = [

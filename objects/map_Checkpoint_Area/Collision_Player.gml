@@ -20,7 +20,6 @@
 		_Checkpoint.index = image_index;
 		_Checkpoint.x = _inst.x + 8;
 		_Checkpoint.y = _inst.y + 8;
-		
-		SaveGame();
+		SaveGame("save0.dat");
 	}
 }

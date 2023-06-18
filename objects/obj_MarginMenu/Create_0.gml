@@ -32,11 +32,27 @@
 		var _ar = [];
 		var _ar2 = [];
 		// Write code for scanning files in a directory here
-		var _files = ["save01.dat", "save02.dat", "save03.dat", "save04.dat"];
-		for(var i = 0;i<array_length(_files);i++){
-			_ar[@i] = [menutype.button, _files[i], function(){SaveGame()}];	
-			_ar2[@i] = [menutype.button, _files[i], function(){LoadGame()}];
+		var i = 0;
+		var fileName = file_find_first(working_directory + "/save/" + "*.dat",fa_directory);
+		var fArray = [];
+		while(fileName != ""){
+			fArray[i] = fileName;
+			fileName = file_find_next();
+			i += 1;
 		}
+		file_find_close();
+		if array_length(fArray) == 0{
+			fArray = ["save0.dat"];	
+		}
+		
+		// Stuff to construct the arrays above
+		// Stuff to construct the buttons below
+		
+		for(var i = 0;i<array_length(fArray);i++){
+			_ar[@i] = [menutype.button, fArray[i], "SaveGame display_name"];	
+			_ar2[@i] = [menutype.button, fArray[i], "LoadGame display_name"];
+		}
+		
 		menu_add_ext(
 			menutype.dropdown,
 			"Save File",
@@ -50,25 +66,9 @@
 			_ar2
 		);
 		menu_add_ext(
-			menutype.slider,
-			"Brightness I guess",
-			[obj_Camera, "bcs_brightness_goal"],
-			0,
-			32,
-			3,
-			0,
-			1,
+			menutype.button,
+			"Add Save File",
+			function(){trace(SaveGame())},
 		);
-		menu_add_ext(
-			menutype.slider,
-			"Contrast I guess",
-			[obj_Camera, "bcs_contrast_goal"],
-			0,
-			32,
-			3,
-			-0.5,
-			2,
-		);
-			
 	}
 }

@@ -38,17 +38,20 @@
 	}
 	#endregion
 	#region Menus
+	#endregion
+	// Debug
+	window_set_caption(string_from_args(fps,":",fps_real));
+	// Pause handler
 	if button_pressed(0,KEY_ESC){
-		menu_cleanup();
-		if !menu_exists(){
-			menu_set(obj_MarginMenu);//menu_set(obj_UberMenu);
+		if !instance_exists(sys_PauseContainer){
+			instance_create(0,0,sys_PauseContainer);
+			menu_cleanup();
+			if !menu_exists(){
+				//menu_set(obj_MarginMenu);
+				menu_set(obj_UberMenu);
+			}
+		}else{
+			if !menu_exists() with(sys_PauseContainer) instance_destroy();	
 		}
 	}
-	#endregion
-}
-
-enum Schedule{
-	ID,
-	Timer,
-	Function
 }

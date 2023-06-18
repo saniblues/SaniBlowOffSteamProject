@@ -75,29 +75,52 @@ function menu_get(){
 		return array_last(active_menus);//array_length(active_menus) > 0;
 	}
 }
+function menu_stored(_id){
+	with(UberCont){
+		for(var i = 0;i<array_length(active_menus);i++){
+			if active_menus[i] == _id{
+				return true;	
+			}
+		}
+	}
+	return false;
+}
 function menu_prune(){
 	with(UberCont){
+		/*
 		with(array_last(active_menus)){
 			// Here I want to Deactivate the menus instead of destroying them, 
 			// But that polish can come later. Functionality comes first.
 			active = false;
 		}
+		*/
+		var _last = array_last(active_menus);
 		array_delete(active_menus, array_length(active_menus) - 1, 1);
+		with(_last) instance_destroy();
 		//array_push(inactive_menus, array_pop(active_menus));
 	}
 	with(par_MenuObject){
 		create_frame = current_frame;	
 	}
 }
-/// Related to the actual handling of menus itself
-function MenuObject_DoPivot(){
-	// Pivot stuff goes here	
+function menu_prune_self(){
+	var _inst = creator;
+	with(UberCont){
+		with(array_last(active_menus)){
+			// Here I want to Deactivate the menus instead of destroying them, 
+			// But that polish can come later. Functionality comes first.
+			if _inst == id{
+				active = false;
+				with(other) array_delete(active_menus, array_length(active_menus) - 1, 1);
+			}
+		}
+		//array_push(inactive_menus, array_pop(active_menus));
+	}
+	with(par_MenuObject){
+		create_frame = current_frame;	
+	}
 }
 function MenuObject_CorrectPos(){
-	// Just a debug toggle on position to test the below content
-	if current_frame % 240 == 0{
-		//x_goal = (x_goal == -8 ? 8 : -8);	
-	}
 	// Makes it adjust to desired position
 	x = lerp(x,x_goal,0.25);
 	if absdiff(x,x_goal) <= 1{
@@ -108,8 +131,6 @@ function MenuObject_CorrectPos(){
 		y = y_goal;	
 	}
 }
-// MenuObject Creation+Handlers
-
 function MenuObject(_x,_y,_displayName) constructor{
 	x = _x;
 	y = _y;
@@ -127,6 +148,7 @@ function MenuObject(_x,_y,_displayName) constructor{
 		}
 	);
 	display_name = _displayName;
+	auto_scale = true;
 	image_xscale = 1.5;
 	image_yscale = 1;
 	
@@ -151,12 +173,17 @@ function MenuObject(_x,_y,_displayName) constructor{
 	creator = -4;
 	active = true;
 	cleanup = false;
-	
+	input = false;
+	input_string = "";
 	on_pick = function(){
 		trace("HELLO EVERYNYAN",current_frame);	
 	}
 	on_pick_post = function(){
-			
+		input = true;
+		input_string = "";
+	}
+	on_alt = function(){
+		input = true;
 	}
 	on_step = undefined;
 	on_draw = function(){
@@ -176,8 +203,12 @@ function MenuObject(_x,_y,_displayName) constructor{
 			}
 		}
 		draw_set_font(fntChat);
-		image_xscale = string_width(display_name) / (sprite_get_width(_spr));
-		image_yscale = string_height(display_name) / (sprite_get_height(_spr));
+		if (auto_scale == true){
+			image_xscale = string_width(display_name) / (sprite_get_width(_spr));
+			image_yscale = string_height(display_name) / (sprite_get_height(_spr));
+			image_xscale = max(image_xscale,1);
+			image_yscale = max(image_yscale,1);
+		}
 		
 		bbox_left = x;
 		bbox_right = x + sprite_get_width(_spr) * image_xscale;
@@ -191,6 +222,16 @@ function MenuObject(_x,_y,_displayName) constructor{
 				cleanup = true;
 			}
 		}
+		
+		/*
+		if(input){
+			display_name = keyboard_string;
+			if keyboard_check_pressed(vk_enter) || button_pressed(0,KEY_FIRE) && !point_in_rectangle(_mx,_my,bbox_left,bbox_top,bbox_right,bbox_bottom){
+				input = false;	
+				keyboard_string = ""
+			}
+		}
+		*/
 		// If the mouse is in the current element, draw the Active sprite instead,
 		   // and perform on_pick(); when the mouse button is RELEASED
 		   // (sorry for yelling, I was yelling at myself as I typed that)
@@ -200,6 +241,9 @@ function MenuObject(_x,_y,_displayName) constructor{
 			if button_released(0,KEY_FIRE){
 				on_pick();
 				on_pick_post();
+			}
+			if button_released(0,KEY_SPEC){
+				on_alt();
 			}
 		}
 		MenuObject_CorrectPos();
@@ -432,7 +476,6 @@ function MenuSlider_Create_Ext(_x, _y, _displayName, _type, _width, _height, _mi
 	ds_list_add(MenuItem, _MenuObject);
 	return MenuItem[|ds_list_size(MenuItem) - 1];
 }
-
 function MenuObject_DropDown(_x,_y,_displayName) constructor{
 	x = _x;
 	y = _y;
@@ -450,6 +493,7 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 		}
 	);
 	display_name = _displayName;
+	auto_scale = true;
 	image_xscale = 1;
 	image_yscale = 1;
 	
@@ -467,6 +511,7 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 	pivot_progress_max = 1.10;
 	
 	pivot_phase = 0;
+	submenu_creator = -4;
 	
 	sprite_idle = sprBasic9Slice_TopLeft;
 	sprite_active = sprBasic9Slice_Cyan_TopLeft;
@@ -481,10 +526,19 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 		menu_add_ext(_type, _display_name, _function);
 	}
 	menu_add_ext = function(){
-		var arg = [menutype.button, "", function(){trace("Default Button")}, 0, 0, 0, 0, 0, 0, 0];
+		// Arguments to be passed into the struct when it is created
+		// Default arguments
+		var arg = [
+			menutype.button,                      // Button Type 
+			"Default Button",                     // Button Name
+			function(){trace("Default Button")},  // Function that is executed when you click on the button
+			0, 0, 0, 0, 0, 0, 0					  // 7 extra variables that I'll find a use for eventually
+		];
+		// Applies these based on user input
 		for(var i = 0;i<argument_count;i++){
 			arg[@i] = argument[i];
 		}
+		// Adds them to a 2D array storing the buttons' info
 		array_push(menu_array, [arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7], arg[8], arg[9]]);	
 	}
 	menu_close_subs = function(){
@@ -510,6 +564,7 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 				_xst = bbox_right + 4;
 				_yst = y;
 			}
+			var _wid = 1;
 			for(var i = 0;i<array_length(menu_array);i++){	
 				var _temp;
 				switch(menu_array[i][0]){
@@ -531,19 +586,43 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 				}
 				with(_temp){
 					display_name = other.menu_array[i][1];
+					// Makes all of the buttons a uniform scale
+					_wid = max(_wid,string_width(display_name) / (sprite_get_width(sprite_idle)));
 					submenu_creator = other;
+					auto_scale = false;
 					if other.menu_array[i][0] == menutype.button || other.menu_array[i][0] == menutype.dropdown_override{
 						on_pick = other.menu_array[i][2];
+						if is_string(on_pick){
+							var __temp = string_split(on_pick, " ");
+							if script_exists(asset_get_index(__temp[0])){
+								on_pick_scr = asset_get_index(__temp[0]);
+								// Extract passthrough variable from self
+								on_pick_pass = lq_defget(self,__temp[1],undefined);
+								// Variable doesn't exist; Just use on_pick_pass directly
+								if is_undefined(on_pick_pass){
+									on_pick_pass = __temp[1];	
+								}
+								on_pick = function(){
+									script_execute(on_pick_scr,on_pick_pass);
+								}
+							}
+						}
 						on_pick_post = function(){
 							if is_lq(submenu_creator){
 								with(submenu_creator){
-									menu_close_subs();	
+									if is_lq(submenu_creator){
+										with(submenu_creator){
+											menu_close_subs();	
+										}
+									}else{
+										menu_close_subs();
+									}
 								}
 							}
 						}
 					}
 					
-					y_goal = _yst + 4;
+					y_goal = _yst + 1;
 					var _y = y;
 					y = y_goal;
 					image_yscale = string_height(display_name) / (sprite_get_height(sprite_idle));
@@ -552,6 +631,11 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 					y = _y;
 				}
 				array_push(menu_active, _temp);
+			}
+			for(var i = 0;i<array_length(menu_active);i++){
+				with(menu_active[i]){
+					image_xscale = _wid;	
+				}
 			}
 		}else{
 			menu_close_subs();
@@ -564,9 +648,10 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 		var _mx = device_mouse_x_to_gui(0);
 		var _my = device_mouse_y_to_gui(0);
 		draw_set_font(fntChat);
-		image_xscale = string_width(display_name) / (sprite_get_width(_spr));
-		image_yscale = string_height(display_name) / (sprite_get_height(_spr));
-		
+		if (auto_scale) == true{
+			image_xscale = string_width(display_name) / (sprite_get_width(_spr));
+			image_yscale = string_height(display_name) / (sprite_get_height(_spr));
+		}
 		bbox_left = x;
 		bbox_right = x + sprite_get_width(_spr) * image_xscale;
 		bbox_top = y;

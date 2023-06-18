@@ -1,0 +1,1 @@
+respawn_self(300)

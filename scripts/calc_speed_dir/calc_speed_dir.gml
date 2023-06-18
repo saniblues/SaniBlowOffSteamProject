@@ -5,6 +5,35 @@ function set_speed_dir(_spd,_dir){
 	vspd=-sin(degtorad(_dir))*_spd;
 }
 
+function speed_init(){
+	hspd = 0;
+	vspd = 0;
+	hspd_extra = 0;
+	vspd_extra = 0;
+	hspd_sub = 0;
+	vspd_sub = 0;
+	max_hspd = 4;
+	max_vspd = 4;
+}
+function add_speed_dir(_dir){
+	if !var_in_self("hspd"){
+		speed_init();
+	}
+	// I think this works?
+	var _multi = 1;
+	var _spd = sqrt(power(hspd * _multi,2) + power(vspd * _multi,2));
+	var _hspd = 0, _vspd = 0;
+	_hspd = lengthdir_x(_spd,_dir);
+	_vspd = lengthdir_y(_spd,_dir);
+	if (abs(_vspd) <= 0.1){
+		_hspd = _spd * sign(_hspd);
+	}else if (abs(_hspd) <= 0.1){
+		_vspd = _spd * sign(_vspd);
+	}
+	
+	hspd = _hspd;
+	vspd = _vspd;
+}
 function calc_speed_dir(_dir){
 	return calc_speed_dir_ext(_dir, 1);
 }
@@ -37,6 +66,7 @@ function calc_speed_dir_ext(_dir,_multi){
 	}
 	speed_extra_compensate();
 	
+	direction = point_direction(x,y,x+hspd,y+vspd);
 	return sqrt(power(hspd,2) + power(vspd,2));
 }
 function speed_extra_compensate(){

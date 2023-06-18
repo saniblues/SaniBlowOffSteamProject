@@ -23,7 +23,9 @@ function button_init(){
 			inputList : ds_list_create(),
 			enabled : true,//i == 0,
 			gamepad : false,
-			gamepad_sep_dir_inputs : true, // Separates Dpad inputs from left stick inputs
+			gamepad_sep_dir_inputs : false, // Separates Dpad inputs from left stick inputs
+			last_opposite_inputs : [],
+			last_opposite_frame : 0,
 			gp_device : i,
 			gp_deadzone : 0.25,
 			gp_axisL_direction : 0,
@@ -40,6 +42,7 @@ function button_init(){
 				vk_up,vk_down,vk_left,vk_right,vk_space,mb_left,mb_right,"Z",vk_shift,"Q",vk_enter,vk_escape,vk_up,vk_down,vk_left,vk_right
 			],
 		}
+		trace("Input method: Gamepad");
 		//var cantUseTernaryInStructsRIP = (i == 0 ? true : false);
 		// I just want to leave the above comment as a reminder
 		
@@ -95,6 +98,35 @@ function input_level_resume(_level){
 function button_step(){
 	for(var i = 0;i<=3;i++){
 		if(INPUT[i].enabled == true){
+			if INPUT[i].gamepad == true{
+				if keyboard_check_pressed(vk_anykey){
+					array_push(INPUT[i].last_opposite_inputs,keyboard_check(vk_anykey));
+					if array_length(INPUT[i].last_opposite_inputs) > 4{
+						INPUT[i].gamepad = false;
+						trace("Swapping to Keyboard inputs");
+					}else{
+						INPUT[i].last_opposite_frame = current_frame;	
+					}
+				}
+			}else{
+				var _dev = INPUT[i].gp_device;
+				for(var o = gp_face1;o<=gp_padr;o++){
+					if gamepad_button_check_pressed(_dev, o){
+						array_push(INPUT[i].last_opposite_inputs,gamepad_button_check(_dev, o));//(vk_anykey);
+						if array_length(INPUT[i].last_opposite_inputs) > 4{
+							INPUT[i].gamepad = true;	
+							trace("Swapping to Gamepad inputs");
+						}else{
+							INPUT[i].last_opposite_frame = current_frame;	
+						}
+					}
+				}
+			}
+	
+			if INPUT[i].last_opposite_frame <= current_frame - 10{
+				INPUT[i].last_opposite_inputs = [];
+				INPUT[i].last_opposite_frame = current_frame;
+			}
 			for(var o = 0;o<array_length(INPUT[i].key_p);o++){
 				// Key states: 0 = Unpressed, 1 = Pressed, 2 = Held, 3 = Released
 				// Input has already been made, increment accordingly
@@ -109,7 +141,7 @@ function button_step(){
 			INPUT[i].gp_axisL_lastdirection = INPUT[i].gp_axisL_direction;
 			// Check for inputs after incrementing
 			for(var o = 0;o<array_length(INPUT[i].key);o++){
-				if !(INPUT[i].gamepad) || !(global.gamepadIsSupported){
+				if !(INPUT[i].gamepad){// || !(global.gamepadIsSupported){
 					if (!batch_compare(INPUT[i].key[o],mb_left,mb_right)){
 						var k = INPUT[i].key[o];
 						if is_string(INPUT[i].key[o]){

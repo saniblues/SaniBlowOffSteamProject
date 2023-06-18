@@ -8,12 +8,14 @@
 		target = [SETTING.audio, "sfx_volume"];
 		x_goal = 64;
 	}
+	/*
 	with(MenuItem_Create(8, floor(game_height/2) + 48 + 9, "Closed Captioning")){
 		target = [SETTING.audio, "captioning"];
 		x_goal = 64;
 	}
+	*/
 	
-	with(MenuItem_Create(8, floor(game_height/2) + 48 + 9, "Closed Captioning")){
+	with(MenuItem_Create(8, floor(game_height/2) + 48 + 9, "Video Menu")){
 		x_goal = 64;
 		on_pick = function(){
 			menu_set(obj_VideoMenu);

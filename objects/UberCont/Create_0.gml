@@ -19,4 +19,9 @@
 	
 	active_menus = [];
 	current_menu = -4;
+	
+	uberpause = false;
+	pauseSurf = -4;
+	pauseSurfBuffer = -4;
+	pause_list = ds_list_create();
 }

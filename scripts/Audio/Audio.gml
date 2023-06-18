@@ -5,6 +5,7 @@ function audio_caption_init(){
 	// Initialize all captions with sounds here
 	audio_caption_add_ext(GoldSrcGib,false,"[GoldSrc Gib Sound]",300,undefined);
 	audio_caption_add_ext(sndDevTest,false,"Welcome to Team Fortress 2\nAfter 9 years of development hopefully,\nit will have been worth the weight\n\nThanks and have fun.",300,0);
+	audio_caption_add_ext(sndPing,false,"[Parry Sound]",300,undefined);
 }
 function audio_caption_add(_SID,_WaitForCaption,_Text){
 	audio_caption_add_ext(_SID,_WaitForCaption,_Text,room_speed,undefined);	

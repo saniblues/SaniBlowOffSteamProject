@@ -9,7 +9,10 @@ function save_init(){
 			gameplay : {
 				difficulty : 1,    // Uh?
 				temperature : 214, // Measures the temperature, in Fahrenheit
-			}
+			},
+			debug : {
+				allow_tracelog : true	
+			},
 		},
 		savedata : {
 			item : {
@@ -30,12 +33,12 @@ function save_init(){
 			}
 		}
 	}
-	if !file_exists(__savefile__) SaveGame();
+	if !file_exists(working_directory + "/save/" + __savefile__) SaveGame();
 	#macro SAVE global.save
 	#macro SAVEDATA global.save.savedata
 	#macro SETTING global.save.settings
 	#macro ITEM global.save.savedata.item
-	#macro __savefile__ "save.txt"
+	#macro __savefile__ "save0.dat"
 }
 enum ITEMTYPE{
 	passive = -1,
@@ -43,35 +46,60 @@ enum ITEMTYPE{
 	weapon = 1
 }
 
-function SaveGame(){
+function SaveGame(_filename){
+	// Scan save directory for all file names -- loading does this too, so whatever
+	var i = 0;
+	var fileName = file_find_first(working_directory + "/save/" + "*.dat",fa_directory);
+	while(fileName != ""){
+		fArray[i] = fileName;
+		fileName = file_find_next();
+		i += 1;
+	}
+	file_find_close();
+	
+	// If a real number is submitted, creates a savefile save#.dat
+	if is_real(_filename){
+		_filename = "save" + string(_filename) + ".dat";	
+	}
+	// Buf it it's undefined, sets its name to the number of files in the directory + 1
+	if is_undefined(_filename){
+		_filename = "save0.dat";
+	}
 	var _string = json_stringify(SAVE);
-	var file = file_text_open_write(__savefile__);
+	var file = file_text_open_write(working_directory + "/save/" + _filename);
 	file_text_write_string(file, _string);
 	file_text_close(file);
 	
 	trace("GAME SAVED");
 }
 
-function LoadGame(){
-	if !file_exists(__savefile__){
-		SaveGame(); // Sanity check	
+function LoadGame(_filename){
+	if is_undefined(_filename){
+		_filename = "save0.dat";	
+	}
+	if !file_exists(working_directory + "/save/" + _filename){
+		_filename = "save0.dat";
+		SaveGame(_filename); // Sanity check	
+	}else{
+		trace("FILE",_filename,"FOUND! LOADING...");	
 	}
 	var _json = "";
-	var file = file_text_open_read(__savefile__);
+	var file = file_text_open_read(working_directory + "/save/" + _filename);
 		do{
 			_json += file_text_readln(file);
 		}until file_text_eof(file);
 	file_text_close(file);
-	
 	var _temp = json_parse(_json);
 	_temp = variable_struct_null_to_undefined(_temp);
 	SAVE = copy_deep(SAVE, _temp);
 	
 	// Temporary
-	schedule(1,function(){
+	schedule_noref(1,function(){
+		trace("APPLYING SAVE DATA");
 		if !is_undefined(SAVEDATA.checkpoint.room){
 			room_goto(SAVEDATA.checkpoint.room);
-			schedule(2,function(){
+			trace("GOING TO",room_get_name(SAVEDATA.checkpoint.room));
+			schedule_noref(2,function(){
 					with(Player){
 						x = SAVEDATA.checkpoint.x;
 						y = SAVEDATA.checkpoint.y;
@@ -84,9 +112,10 @@ function LoadGame(){
 					}
 				}
 			);
-			}
+		}else{
+			trace(SAVEDATA.checkpoint.room);	
 		}
-	);
+	});
 }
 
 function item_text(_key){

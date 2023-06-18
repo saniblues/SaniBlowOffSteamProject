@@ -27,7 +27,7 @@
 				}
 			}else{
 				try{
-					on_pick();
+					with(id) on_pick();
 					has_on_pick = true;
 				}catch(error){
 					has_on_pick = false;

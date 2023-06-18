@@ -36,7 +36,7 @@
 				moveState = movestate.walk;	
 			}
 		}
-		if button_released(0,KEY_UP) && moveState == movestate.jump_charge{
+		if (button_released(0,KEY_UP) || button_released(0,KEY_JUMP)) && moveState == movestate.jump_charge{
 			if hspd_extra <= 2.75{
 				hspd_extra += 2.75;
 			}else{
@@ -63,7 +63,7 @@
 		if button_pressed(0,KEY_DOWN) && batch_compare(moveState,movestate.jump,movestate.doublejump,movestate.angyjump){
 			moveState = movestate.dropkick;	
 		}
-		if button_pressed(0,KEY_UP) && (batch_compare(moveState, movestate.idle, movestate.walk, movestate.jump, movestate.jump_charge, movestate.doublejump) || (moveState == movestate.doublejump_landing && coyote_time >= current_frame + 20)){
+		if (button_pressed(0,KEY_UP) || button_pressed(0,KEY_JUMP)) && (batch_compare(moveState, movestate.idle, movestate.walk, movestate.jump, movestate.jump_charge, movestate.doublejump) || (moveState == movestate.doublejump_landing && coyote_time >= current_frame + 20)){
 			if moveState != movestate.doublejump /*|| !jump_avail*/{
 				/*
 				if (moveState == movestate.doublejump_landing){

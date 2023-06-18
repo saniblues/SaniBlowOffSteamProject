@@ -29,7 +29,7 @@
   "physicsShapePoints": [],
   "physicsStartAwake": true,
   "properties": [],
-  "solid": false,
+  "solid": true,
   "spriteId": {
     "name": "sprEmmi_SanicJump",
     "path": "sprites/sprEmmi_SanicJump/sprEmmi_SanicJump.yy",
