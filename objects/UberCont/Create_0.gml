@@ -16,10 +16,11 @@
 			}, i);
 		}
 	}
-	
 	active_menus = [];
 	current_menu = -4;
-	
+	menu_queue_prune = false;
+	MenuItem = -1;
+		
 	uberpause = false;
 	pauseSurf = -4;
 	pauseSurfBuffer = -4;

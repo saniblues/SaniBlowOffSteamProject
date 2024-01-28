@@ -53,5 +53,9 @@
 			}
 		}
 	}
+	if (menu_queue_prune){
+		menu_prune();
+		menu_queue_prune = false;
+	}
 	display_set_gui_size(_dw,_dh);
 }

@@ -67,6 +67,7 @@ function menu_cleanup(){
 				_count ++;
 			}
 		}
+		active_menus = [];
 		trace("PRUNED",_count,"BAD INDEXES!");
 	}
 }
@@ -103,6 +104,14 @@ function menu_prune(){
 		create_frame = current_frame;	
 	}
 }
+function menu_prep_prune(){
+	if !variable_struct_exists(self,"creator") exit;
+	if instance_exists(creator){
+		with(creator){
+			menu_queue_prune = true;	
+		}
+	}
+}
 function menu_prune_self(){
 	var _inst = creator;
 	with(UberCont){
@@ -123,11 +132,11 @@ function menu_prune_self(){
 function MenuObject_CorrectPos(){
 	// Makes it adjust to desired position
 	x = lerp(x,x_goal,0.25);
-	if absdiff(x,x_goal) <= 1{
+	if abs(x - x_goal) <= 1{
 		x = x_goal;	
 	}
 	y = lerp(y,y_goal,0.25);
-	if absdiff(y,y_goal) <= 1{
+	if abs(y - y_goal) <= 1{
 		y = y_goal;	
 	}
 }
@@ -226,7 +235,7 @@ function MenuObject(_x,_y,_displayName) constructor{
 		/*
 		if(input){
 			display_name = keyboard_string;
-			if keyboard_check_pressed(vk_enter) || button_pressed(0,KEY_FIRE) && !point_in_rectangle(_mx,_my,bbox_left,bbox_top,bbox_right,bbox_bottom){
+			if keyboard_check_pressed(vk_enter) || button_pressed(9999,KEY_FIRE) && !point_in_rectangle(_mx,_my,bbox_left,bbox_top,bbox_right,bbox_bottom){
 				input = false;	
 				keyboard_string = ""
 			}
@@ -238,11 +247,11 @@ function MenuObject(_x,_y,_displayName) constructor{
 		   // (please understand)
 		if !(cleanup) && (active) && point_in_rectangle(_mx,_my, bbox_left,bbox_top,bbox_right,bbox_bottom){
 			_spr = sprite_active;
-			if button_released(0,KEY_FIRE){
+			if mouse_check_button_released(mb_left){//if mouse_check_button_released(mb_left){//if button_released(9999,KEY_FIRE){
 				on_pick();
 				on_pick_post();
 			}
-			if button_released(0,KEY_SPEC){
+			if mouse_check_button_released(mb_right){//if mouse_check_button_released(mb_right){//if button_released(9999,KEY_SPEC){
 				on_alt();
 			}
 		}
@@ -374,12 +383,12 @@ function MenuSlider(_x, _y, _displayName, _type, _width, _height, _min, _max) co
 		   // (sorry for yelling, I was yelling at myself as I typed that)
 		   // (please understand)
 		if (active) && point_in_rectangle(_mx,_my, button_x - (image_xscale * 3), button_y - (image_yscale * 3),button_x + (image_xscale * 3), button_y + (image_yscale * 3)){
-			if button_pressed(0,KEY_FIRE){
+			if mouse_check_button_pressed(mb_left){//if mouse_check_button_pressed(mb_left){
 				tracking = true;
 			}
 		}
 		if (tracking){
-			if !button_check(0, KEY_FIRE) tracking = false;
+			if !mouse_check_button(mb_left) tracking = false;
 			_spr = sprite_active;
 			var _oldx = button_x, _oldy = button_y;
 			if type == 0{
@@ -462,7 +471,7 @@ function MenuItem_Create(_x, _y, _displayName){
 	return MenuItem[|ds_list_size(MenuItem) - 1];
 }
 function MenuSlider_Create(_x, _y, _width){
-	MenuSlider_Create_Ext(_x, _y, 0, _width, 3, 0, 1);
+	MenuSlider_Create_Ext(_x, _y, "DefaultSlider", 0, _width, 3, 0, 1);
 }
 function MenuSlider_Create_Ext(_x, _y, _displayName, _type, _width, _height, _min, _max){
 	if !var_in_self("MenuItem"){
@@ -600,7 +609,10 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 								on_pick_pass = lq_defget(self,__temp[1],undefined);
 								// Variable doesn't exist; Just use on_pick_pass directly
 								if is_undefined(on_pick_pass){
-									on_pick_pass = __temp[1];	
+									// YO SANI
+									// Changed this to use the display_name instead of __temp[1] due to an emergent error with the new Game Maker runtime
+									// I don't know if this will affect anything so it is listed here in case it does
+									on_pick_pass = display_name;//__temp[1];	
 								}
 								on_pick = function(){
 									script_execute(on_pick_scr,on_pick_pass);
@@ -705,7 +717,7 @@ function MenuObject_DropDown(_x,_y,_displayName) constructor{
 		   // (please understand)
 		if !(cleanup) && point_in_rectangle(_mx,_my, x, y, x + (image_xscale * 9), y + (image_yscale * 9)){
 			_spr = sprite_active;
-			if button_released(0,KEY_FIRE){
+			if mouse_check_button_released(mb_left){//if button_released(9999,KEY_FIRE){
 				on_pick();	
 			}
 		}

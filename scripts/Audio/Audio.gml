@@ -80,23 +80,6 @@ function Caption(_SID,_Text,_WaitForCaption,_Lifetime,_ForcedOrder) constructor{
 
 function audio_play_captioned(_SID){
 	audio_play_captioned_pitchvol(_SID, 1, 1);
-	/*
-	if !audio_exists(_SID) exit;
-	if !instance_exists(sys_ClosedCaptioning){
-		instance_create_depth(0,0,0,sys_ClosedCaptioning);	
-	}
-	var _lq = audio_caption_lookup(_SID);
-	if !is_undefined(_lq){
-		if is_struct(_lq){
-			with(sys_ClosedCaptioning){
-				ds_list_add(audio_queue,audio_caption_lookup(_SID));	
-			}
-			delete _lq;
-		}
-	}else{
-		audio_play_sound(_SID,1,0);	
-	}
-	*/
 }
 
 function audio_play_captioned_pitch(_SID,_pitch){
